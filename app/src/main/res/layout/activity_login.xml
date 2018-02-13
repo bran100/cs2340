@@ -20,12 +20,6 @@
         android:layout_marginBottom="8dp"
         android:visibility="gone" />
 
-    <Button
-        android:id="@+id/loginToHome"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Back" />
-
     <ScrollView
         android:id="@+id/login_form"
         android:layout_width="match_parent"
@@ -79,6 +73,13 @@
                 android:text="Sign In"
                 android:textStyle="bold" />
 
+            <Button
+                android:id="@+id/loginToHome"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Back" />
+
         </LinearLayout>
     </ScrollView>
+
 </LinearLayout>
