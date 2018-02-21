@@ -5,7 +5,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.content.Intent;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Home extends AppCompatActivity {
+    static Map<String, String[]> userInfo = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,5 +20,12 @@ public class Home extends AppCompatActivity {
     public void toLoginScreen(View v) {
         Intent toLogin = new Intent(getBaseContext(), LoginActivity.class);
         startActivity(toLogin);
+    }
+    public void toRegistrationScreen(View v) {
+        Intent toRegistration = new Intent(getBaseContext(), RegistrationActivity.class);
+        startActivity(toRegistration);
+    }
+    static Map<String, String[]> getUserInfo() {
+        return userInfo;
     }
 }
