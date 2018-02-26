@@ -64,6 +64,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginFormView;
     private Button backButton;
+    static String[] currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -328,6 +329,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             boolean userExists = RegistrationActivity.userExists(mUsername);
             if (userExists) {
                 Map<String, String[]> userCredentials= Home.getUserInfo();
+                currentUser = userCredentials.get(mUsername);
                 return userCredentials.get(mUsername)[0].equals(mPassword);
             }
 
