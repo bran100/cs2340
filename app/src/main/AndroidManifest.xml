@@ -28,6 +28,10 @@
         <activity
             android:name=".RegistrationActivity"
             android:label="@string/title_activity_registration"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ShelterInfo"
+            android:label="@string/title_activity_shelter_info"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
