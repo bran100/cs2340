@@ -15,6 +15,7 @@ public class Home extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        userInfo.put("test", new String[]{"test", "hi", "Admin"});
     }
 
     public void toLoginScreen(View v) {
