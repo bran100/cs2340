@@ -31,10 +31,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import android.util.Log;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -64,7 +71,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginFormView;
     private Button backButton;
-    static String[] currentUser;
+    static String currentUser;
+    private boolean passwordValid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -318,23 +326,35 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
+            passwordValid = false;
+            DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+            DatabaseReference ref = database.child("users");
 
-            try {
+            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                            if (userSnapshot.child("userName").getValue().toString().equals(mUsername)) {
+                                if (userSnapshot.child("password").getValue().toString().equals(mPassword)) {
+                                    passwordValid = true;
+                                    currentUser = mUsername;
+                                }
+                            }
+                        }
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+                try {
                 // Simulate network access.
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
-                return false;
+                Log.d("TAG", "LoginActivity Error: " + e);
             }
-            boolean userExists = RegistrationActivity.userExists(mUsername);
-            if (userExists) {
-                Map<String, String[]> userCredentials= Home.getUserInfo();
-                currentUser = userCredentials.get(mUsername);
-                return userCredentials.get(mUsername)[0].equals(mPassword);
-            }
-
-            // TODO: register the new account here.
-            return false;
+            return passwordValid;
         }
 
         @Override
@@ -344,8 +364,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             if (success) {
                 finish();
-                Intent toMain = new Intent(getBaseContext(), Main.class);
-                startActivity(toMain);
+                Intent toProfile = new Intent(getBaseContext(), Profile.class);
+                startActivity(toProfile);
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();

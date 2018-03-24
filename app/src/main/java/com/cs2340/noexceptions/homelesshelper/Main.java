@@ -10,7 +10,17 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import org.w3c.dom.Text;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -21,38 +31,46 @@ import java.util.Map;
 
 
 public class Main extends AppCompatActivity {
-    private User user;
     static Map<String,Shelter> shelterMap;
     static String currentShelter;
     ArrayAdapter<Shelter> shelterView;
+    private DatabaseReference database;
+    ArrayList<Shelter> shelterTest = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        String[] userInfo = LoginActivity.currentUser;
-        if (userInfo[2].equals("Admin")) {
-            user = new Admin(null, null, null);
-        } else {
-            user = new HomelessPerson(null, null, null);
-        }
-        InputStream inputStream = getResources().openRawResource(R.raw.homeless_shelter_database);
-        ShelterCSVReader csv = new ShelterCSVReader(inputStream);
-        List<String[]> shelters = csv.readShelters();
         shelterMap = new HashMap<>();
-        List<String> shelterNames = new ArrayList<>();
-        ArrayList<Shelter> shelterTest = new ArrayList<>();
-        for (String[] shelter : shelters) {
-            Shelter currentShelter = new Shelter(shelter[0], shelter[1], shelter[2],
-                    shelter[3],shelter[4], shelter[5], shelter[6], shelter[8]);
-            shelterMap.put(shelter[1], currentShelter);
-            shelterTest.add(currentShelter);
-            shelterNames.add(shelter[1]);
+        database = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference ref = database.child("shelters");
+        shelterView = new ShelterAdapter(this, shelterTest);
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Shelter s = snapshot.getValue(Shelter.class);
+                    s.updateAllNeeded();
+                    shelterTest.add(s);
+                    shelterMap.put(s.getName(), s);
+                    shelterView.notifyDataSetChanged();
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        //Try to fix this.
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException ie) {
+            Log.d("IntEx", "onCreateMain: Interrupt happened while waiting");
         }
 
+
         // Create ArrayAdapter for Shelters
-        //shelterView = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, shelterTest);
         final ListView listView = (ListView) findViewById(R.id.shelterList);
-        shelterView = new ShelterAdapter(this, shelterTest);
         listView.setAdapter(shelterView);
 
         // Search functionality
@@ -83,6 +101,15 @@ public class Main extends AppCompatActivity {
                 Intent shelterInfo = new Intent(getBaseContext(), ShelterInfo.class);
                 startActivity(shelterInfo);
 
+            }
+        });
+
+        TextView profile = (TextView) findViewById(R.id.profileText);
+        profile.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent toProfile = new Intent(getBaseContext(), Profile.class);
+                startActivity(toProfile);
             }
         });
     }

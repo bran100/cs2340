@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.cs2340.noexceptions.homelesshelper.RegistrationActivity"
-    android:background="#55A8D2">
+    tools:context="com.cs2340.noexceptions.homelesshelper.Profile">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -21,11 +20,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include
-        layout="@layout/content_registration"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        tools:layout_editor_absoluteY="56dp" />
+    <include layout="@layout/content_profile" />
 
 
 </android.support.design.widget.CoordinatorLayout>

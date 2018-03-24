@@ -3,6 +3,7 @@ package com.cs2340.noexceptions.homelesshelper;
 
 import android.util.Log;
 
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

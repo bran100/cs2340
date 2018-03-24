@@ -2,21 +2,31 @@ package com.cs2340.noexceptions.homelesshelper;
 
 
 
+import android.util.Log;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class Shelter {
-    String id;
-    String name;
-    String capacity;
-    String gender;
-    String age;
-    String longitude;
-    String latitude;
-    String address;
-    String telephoneNumber;
+    private String id;
+    private String name;
+    private String capacity;
+    private String gender;
+    private String age;
+    private String longitude;
+    private String latitude;
+    private String address;
+    private String telephoneNumber;
+    private String restrictions;
     public Shelter(String id, String name, String capacity, String restrictions,
                    String longitude, String latitude, String address, String telephoneNumber) {
         this.id = id;
         this.name = name;
-        this.capacity = capacity.replace("\"", "").replace(",", "\n").replace("Anyone", "");
+        capacity = capacity.replace("\"", "").replace(",", "\n").replace("Anyone", "");
+        changeCapacity(capacity);
         //this.gender = (gender.replace("/", "\n")).replace("w/", "\n");
         this.longitude = longitude;
         this.latitude = latitude;
@@ -25,24 +35,14 @@ public class Shelter {
         findGender(restrictions);
         findAge(restrictions);
     }
+    public Shelter() {
+    }
     @Override
     public String toString() {
         return name;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public String getAge() {
-        return age;
-    }
-
-    public void findGender(String restrictions) {
+    private void findGender(String restrictions) {
         if (restrictions.toLowerCase().contains("ANYONE".toLowerCase())) {
             gender = "Male/Female";
         }
@@ -56,7 +56,7 @@ public class Shelter {
             gender = "Male/Female/Unknown";
         }
     }
-    public void findAge(String restrictions) {
+    private void findAge(String restrictions) {
         if (restrictions.toLowerCase().contains("NEWBORNS".toLowerCase())) {
             age = "Families with newborns";
         }
@@ -71,4 +71,75 @@ public class Shelter {
         }
     }
 
+    private void changeCapacity(String capacity) {
+        int total = 0;
+        if (capacity.contains("N/A")) {
+            total = 50;
+        } else {
+            if (capacity.contains(" ")) {
+                String[] capacityNum = capacity.split(" ");
+                for (String cn : capacityNum) {
+                    try {
+                        int num = Integer.parseInt(cn);
+                        total += num;
+                    } catch (Exception e) {
+                        Log.d("Capacity", "changeCapacity: Not Valid Number");
+                    }
+                }
+            } else {
+                total = Integer.parseInt(capacity);
+            }
+        }
+        this.capacity = Integer.toString(total);
+    }
+    boolean updateCapacity(int numPeople) {
+        if (Integer.parseInt(capacity) - numPeople < 0) {
+            return false;
+        } else {
+            int cap = Integer.parseInt(capacity) - numPeople;
+            capacity = Integer.toString(cap);
+            DatabaseReference database = FirebaseDatabase.getInstance().getReference().child("shelters").child(id);
+            Map<String, Object> taskMap = new HashMap<>();
+            taskMap.put("capacity", capacity);
+            database.updateChildren(taskMap);
+            return true;
+        }
+    }
+    public void updateAllNeeded() {
+        findGender(restrictions);
+        findAge(restrictions);
+        address = address.replace("\"", "");
+        capacity = capacity.replace("\"", "").replace(",", "\n").replace("Anyone", "");
+        changeCapacity(capacity);
+    }
+    public String getId() {
+        return id;
+    }
+    public String getName() {
+        return name;
+    }
+    String getCapacity() {
+    return capacity;
+    }
+    String getGender() {
+        return gender;
+    }
+    String getAge() {
+        return age;
+    }
+    String getLongitude() {
+        return longitude;
+    }
+    String  getLatitude() {
+        return latitude;
+    }
+    String getAddress() {
+        return address;
+    }
+    String getTelephoneNumber() {
+        return telephoneNumber;
+    }
+    String getRestrictions() {
+        return restrictions;
+    }
 }

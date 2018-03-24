@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "663761205469",
+    "firebase_url": "https://homeless-helper-73ea4.firebaseio.com",
+    "project_id": "homeless-helper-73ea4",
+    "storage_bucket": "homeless-helper-73ea4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:663761205469:android:37497aa683ba9211",
+        "android_client_info": {
+          "package_name": "com.cs2340.noexceptions.homelesshelper"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "663761205469-c6g5ikkt8gvca8bed82g01ng7d7g8st2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cs2340.noexceptions.homelesshelper",
+            "certificate_hash": "5c5807be03b8a0651c79319672e7ddd0ed2faf1a"
+          }
+        },
+        {
+          "client_id": "663761205469-koh4g126jmi0v9icp9577ira0gs5fem5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7Xx6NopIZ_EXm7xJasqcdlOIdQ-4HC6s"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "663761205469-koh4g126jmi0v9icp9577ira0gs5fem5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

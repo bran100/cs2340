@@ -71,13 +71,16 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
                     List<Shelter> resultsData = new ArrayList<>();
                     String searchstr = charSequence.toString().toLowerCase();
                     for (Shelter s : shelterList) {
-                        if (s.name.toLowerCase().contains(searchstr) && !resultsData.contains(s)) {
+                        if (searchstr.startsWith("anyone") && !resultsData.contains(s)) {
                             resultsData.add(s);
                         }
-                        if ((s.age.toLowerCase().startsWith(searchstr) || s.gender.contains("Anyone")) && !resultsData.contains(s)) {
+                        if (s.getName().toLowerCase().contains(searchstr) && !resultsData.contains(s)) {
                             resultsData.add(s);
                         }
-                        if ((s.gender.toLowerCase().startsWith(searchstr) || (s.gender.toLowerCase().contains("/")
+                        if ((s.getAge().toLowerCase().startsWith(searchstr) || s.getGender().contains("Anyone")) && !resultsData.contains(s)) {
+                            resultsData.add(s);
+                        }
+                        if ((s.getGender().toLowerCase().startsWith(searchstr) || (s.getGender().toLowerCase().contains("/")
                                 && (searchstr.equals("male") || searchstr.equals("female"))) && !resultsData.contains(s))) {
                             resultsData.add(s);
                         }

@@ -9,24 +9,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Home extends AppCompatActivity {
-    static Map<String, String[]> userInfo = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        userInfo.put("test", new String[]{"test", "hi", "Admin"});
     }
 
     public void toLoginScreen(View v) {
         Intent toLogin = new Intent(getBaseContext(), LoginActivity.class);
         startActivity(toLogin);
     }
+
     public void toRegistrationScreen(View v) {
         Intent toRegistration = new Intent(getBaseContext(), RegistrationActivity.class);
         startActivity(toRegistration);
-    }
-    static Map<String, String[]> getUserInfo() {
-        return userInfo;
     }
 }
