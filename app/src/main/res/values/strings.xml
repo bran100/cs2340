@@ -16,4 +16,6 @@
     <string name="title_activity_registration">RegistrationActivity</string>
     <string name="title_activity_shelter_info">ShelterInfo</string>
     <string name="title_activity_profile">Profile</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_maps_filter">MapsFilterActivity</string>
 </resources>

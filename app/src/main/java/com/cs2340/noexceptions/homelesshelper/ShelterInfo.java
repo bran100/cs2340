@@ -16,27 +16,28 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class ShelterInfo extends AppCompatActivity {
     private Shelter currentShelter;
+    private String currentShelterName;
     private Button reserve;
     private User currentUser = Profile.getUser();
+    private DatabaseReference database;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shelter_info);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        currentShelter = Main.shelterMap.get(Main.currentShelter);
-        getSupportActionBar().setTitle(currentShelter.getName());
-        setUpEditTexts(currentShelter);
-        setUpOnClicks();
-        checkUserReserved();
+        getCurrentShelterDB();
 
 
 
@@ -146,5 +147,37 @@ public class ShelterInfo extends AppCompatActivity {
                 reserve.setVisibility(View.INVISIBLE);
             }
         }
+    }
+    private void getCurrentShelterDB() {
+        Intent intent = getIntent();
+        String activity = intent.getStringExtra("activity");
+        if (activity.equals("main")) {
+            currentShelterName = Main.getCurrentShelter();
+        } else {
+            currentShelterName = MapsActivity.getCurrentShelter();
+        }
+        getSupportActionBar().setTitle(currentShelterName);
+        database = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference ref = database.child("shelters");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Shelter s = snapshot.getValue(Shelter.class);
+                    if (s.getName().equals(currentShelterName)) {
+                        s.updateAllNeeded();
+                        currentShelter = s;
+                        setUpEditTexts(currentShelter);
+                        setUpOnClicks();
+                        checkUserReserved();
+                        break;
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }

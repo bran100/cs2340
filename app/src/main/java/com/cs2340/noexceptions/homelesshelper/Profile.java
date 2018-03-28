@@ -66,8 +66,8 @@ public class Profile extends AppCompatActivity {
         map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent toMain = new Intent(getBaseContext(), Main.class);
-                startActivity(toMain);
+                Intent toMap = new Intent(getBaseContext(), MapsActivity.class);
+                startActivity(toMap);
             }
         });
 

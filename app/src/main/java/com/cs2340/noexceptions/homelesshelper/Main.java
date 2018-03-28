@@ -31,7 +31,6 @@ import java.util.Map;
 
 
 public class Main extends AppCompatActivity {
-    static Map<String,Shelter> shelterMap;
     static String currentShelter;
     ArrayAdapter<Shelter> shelterView;
     private DatabaseReference database;
@@ -40,7 +39,6 @@ public class Main extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        shelterMap = new HashMap<>();
         database = FirebaseDatabase.getInstance().getReference();
         DatabaseReference ref = database.child("shelters");
         shelterView = new ShelterAdapter(this, shelterTest);
@@ -51,7 +49,6 @@ public class Main extends AppCompatActivity {
                     Shelter s = snapshot.getValue(Shelter.class);
                     s.updateAllNeeded();
                     shelterTest.add(s);
-                    shelterMap.put(s.getName(), s);
                     shelterView.notifyDataSetChanged();
                 }
             }
@@ -99,12 +96,13 @@ public class Main extends AppCompatActivity {
                 Object shelterClickedId = listView.getItemAtPosition(i);
                 currentShelter = shelterClickedId.toString();
                 Intent shelterInfo = new Intent(getBaseContext(), ShelterInfo.class);
+                shelterInfo.putExtra("activity", "main");
                 startActivity(shelterInfo);
 
             }
         });
 
-        TextView profile = (TextView) findViewById(R.id.profileText);
+        ImageView profile = (ImageView) findViewById(R.id.profile);
         profile.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -112,10 +110,18 @@ public class Main extends AppCompatActivity {
                 startActivity(toProfile);
             }
         });
+
+        ImageView maps = (ImageView) findViewById(R.id.shelterMap);
+        maps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent toMaps = new Intent(getBaseContext(), MapsActivity.class);
+                startActivity(toMaps);
+            }
+        });
     }
 
-    public void toHomeScreen(View v) {
-        Intent toHome = new Intent(getBaseContext(), Home.class);
-        startActivity(toHome);
+    public static String getCurrentShelter() {
+        return currentShelter;
     }
 }

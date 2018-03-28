@@ -58,6 +58,17 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
     }
 
     @Override
+    public Shelter getItem(int arg0) {
+        if(shelterListCopy != null){
+            try {
+                return shelterListCopy.get(arg0);
+            } catch (IndexOutOfBoundsException e) {
+                return null;
+            }
+        }
+        return null;
+    }
+    @Override
     public Filter getFilter() {
         return new Filter() {
 
