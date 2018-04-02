@@ -62,7 +62,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         database = FirebaseDatabase.getInstance().getReference();
         DatabaseReference ref = database.child("shelters");
         mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(33.753746,-84.386330)));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(5));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(10));
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -89,17 +89,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return currentShelter;
     }
     private void mapMarkerOnClick() {
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
-            public boolean onMarkerClick(Marker marker) {
-                if(marker.getTitle() != null){
+            public void onInfoWindowClick(Marker marker) {
+                if (marker.getTitle() != null) {
                     currentShelter = marker.getTitle();
                     Intent shelterInfo = new Intent(getBaseContext(), ShelterInfo.class);
                     shelterInfo.putExtra("activity", "maps");
                     startActivity(shelterInfo);
-                    return true;
                 }
-                return false;
             }
         });
     }
