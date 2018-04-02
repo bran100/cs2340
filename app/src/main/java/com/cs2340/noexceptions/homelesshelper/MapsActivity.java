@@ -5,8 +5,10 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -58,7 +60,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
         database = FirebaseDatabase.getInstance().getReference();
         DatabaseReference ref = database.child("shelters");
         mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(33.753746,-84.386330)));
@@ -72,7 +73,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     double latitude = Double.parseDouble(s.getLatitude());
                     double longitude = Double.parseDouble(s.getLongitude());
                     LatLng shelter = new LatLng(latitude,longitude);
-                    Marker marker = mMap.addMarker(new MarkerOptions().position(shelter).title(s.getName()));
+                    Marker marker = mMap.addMarker(new MarkerOptions().position(shelter)
+                            .title(s.getName()).snippet(s.getTelephoneNumber()));
                     shelterMarkers.put(s.getName(), marker);
                     shelters.add(s);
                 }
