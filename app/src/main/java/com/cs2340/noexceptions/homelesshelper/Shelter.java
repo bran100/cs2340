@@ -76,6 +76,7 @@ public class Shelter {
             gender = "Male/Female/Unknown";
         }
     }
+
     private void findAge(String restrictions) {
         if (restrictions.toLowerCase().contains("NEWBORNS".toLowerCase())) {
             age = "Families with newborns";

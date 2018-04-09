@@ -18,6 +18,9 @@ import static org.junit.Assert.*;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Log.class})
 public class ExampleUnitTest {
+
+    //Nenad
+
     @Test
     public void addition_isCorrect() throws Exception {
         assertEquals(4, 2 + 2);
@@ -62,7 +65,7 @@ public class ExampleUnitTest {
         assertEquals(Integer.toString(0), s.getCapacity());
     }
 
-
+    //Daisha
 
     @Test
     public void testFindAgeNewborn() {
@@ -99,8 +102,34 @@ public class ExampleUnitTest {
         assertEquals("Anyone", s.getAge());
     }
 
+    //Armand
 
+    @Test
+    public void testFindGenderAnyone() {
+        Shelter s = new Shelter("", "", "10", "ANYONE",
+                "", "", "", "");
+        assertEquals("Male/Female", s.getGender());
+    }
 
+    @Test
+    public void testFindWomen() {
+        Shelter s = new Shelter("", "", "10", "WOMEN",
+                "", "", "", "");
+        assertEquals("Female", s.getGender());
+    }
 
+    @Test
+    public void testFindGenderMen() {
+        Shelter s = new Shelter("", "", "10", "MEN",
+                "", "", "", "");
+        assertEquals("Male", s.getGender());
+    }
+
+    @Test
+    public void testFindGenderNone() {
+        Shelter s = new Shelter("", "", "10", "",
+                "", "", "", "");
+        assertEquals("Male/Female/Unknown", s.getGender());
+    }
 
 }
