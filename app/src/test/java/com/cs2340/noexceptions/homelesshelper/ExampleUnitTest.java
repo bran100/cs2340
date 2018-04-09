@@ -22,29 +22,6 @@ public class ExampleUnitTest {
     public void addition_isCorrect() throws Exception {
         assertEquals(4, 2 + 2);
     }
-    /*
-        private void changeCapacity(String capacity) {
-        int total = 0;
-        if (capacity.contains("N/A")) {
-            total = 50;
-        } else {
-            if (capacity.contains(" ")) {
-                String[] capacityNum = capacity.split(" ");
-                for (String cn : capacityNum) {
-                    try {
-                        int num = Integer.parseInt(cn);
-                        total += num;
-                    } catch (Exception e) {
-                        Log.d("Capacity", "changeCapacity: Not Valid Number");
-                    }
-                }
-            } else {
-                total = Integer.parseInt(capacity);
-            }
-        }
-        this.capacity = Integer.toString(total);
-    }
-     */
     @Test
     public void testCapacityNASuccess() {
         Shelter s = new Shelter("", "", "N/A", "",
