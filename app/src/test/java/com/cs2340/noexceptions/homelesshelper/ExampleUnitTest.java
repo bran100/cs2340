@@ -61,4 +61,46 @@ public class ExampleUnitTest {
                 "", "", "", "");
         assertEquals(Integer.toString(0), s.getCapacity());
     }
+
+
+
+    @Test
+    public void testFindAgeNewborn() {
+        Shelter s = new Shelter("", "", "10", "NEWBORNS",
+                "", "", "", "");
+        assertEquals("Families with newborns", s.getAge());
+    }
+
+    @Test
+    public void testFindAgeCY() {
+        Shelter s = new Shelter("", "", "10", "YOUNG or CHILDREN",
+                "", "", "", "");
+        assertEquals("Children / Young Adults", s.getAge());
+    }
+
+    @Test
+    public void testFindAgeChildren() {
+        Shelter s = new Shelter("", "", "10", "CHILDREN",
+                "", "", "", "");
+        assertEquals("Children", s.getAge());
+    }
+
+    @Test
+    public void testAgeYoungAdults() {
+        Shelter s = new Shelter("", "", "10", "YOUNG",
+                "", "", "", "");
+        assertEquals("Young Adults", s.getAge());
+    }
+
+    @Test
+    public void testAgeAnyone() {
+        Shelter s = new Shelter("", "", "10", "VETERANS",
+                "", "", "", "");
+        assertEquals("Anyone", s.getAge());
+    }
+
+
+
+
+
 }
