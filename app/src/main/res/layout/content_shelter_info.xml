@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -25,6 +26,7 @@
 
         <EditText
             android:id="@+id/shelterName"
+            android:labelFor="@+id/shelterName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -72,6 +74,7 @@
 
             <EditText
                 android:id="@+id/shelterPhone"
+                android:labelFor="@+id/shelterPhone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -83,7 +86,7 @@
                 android:ems="10"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
-                android:inputType="none"
+                android:inputType="phone"
                 android:textAlignment="textEnd"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -118,6 +121,7 @@
 
             <EditText
                 android:id="@+id/shelterGender"
+                android:labelFor="@+id/shelterGender"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -167,6 +171,7 @@
 
             <EditText
                 android:id="@+id/shelterLongitude"
+                android:labelFor="@+id/shelterLongitude"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -216,6 +221,7 @@
 
             <EditText
                 android:id="@+id/shelterLatitude"
+                android:labelFor="@+id/shelterLatitude"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -262,6 +268,7 @@
 
             <EditText
                 android:id="@+id/shelterCapacity"
+                android:labelFor="@+id/shelterCapacity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -309,6 +316,7 @@
 
             <EditText
                 android:id="@+id/shelterAddress"
+                android:labelFor="@+id/shelterAddress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -365,6 +373,7 @@
                 android:id="@+id/profile"
                 android:layout_width="match_parent"
                 android:layout_height="41dp"
+                android:contentDescription="user profile"
                 app:srcCompat="@drawable/people" />
 
             <TextView
@@ -389,6 +398,7 @@
                 android:id="@+id/shelterList"
                 android:layout_width="match_parent"
                 android:layout_height="41dp"
+                android:contentDescription="shelter list"
                 app:srcCompat="@drawable/home" />
 
             <TextView
@@ -412,6 +422,7 @@
                 android:id="@+id/shelterMap"
                 android:layout_width="match_parent"
                 android:layout_height="41dp"
+                android:contentDescription="shelter map"
                 app:srcCompat="@drawable/map" />
 
             <TextView
@@ -436,6 +447,7 @@
                 android:id="@+id/userSettings"
                 android:layout_width="match_parent"
                 android:layout_height="41dp"
+                android:contentDescription="user settings"
                 app:srcCompat="@drawable/gear" />
 
             <TextView

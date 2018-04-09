@@ -1,7 +1,9 @@
 package com.cs2340.noexceptions.homelesshelper;
 
 
-
+/**
+ * The user superclass for a general user
+ */
 public class User {
     String userName;
     String password;
@@ -10,22 +12,22 @@ public class User {
     String contact_info;
     String accountType;
 
-    public String getUserName() {
+    String getUserName() {
         return userName;
     }
-    public String getPassword() {
+    String getPassword() {
         return password;
     }
-    public String getName() {
+    String getName() {
         return name;
     }
-    public boolean getAccountState() {
+    boolean getAccountState() {
         return accountState;
     }
-    public String getContact_info() {
+    String getContact_info() {
         return contact_info;
     }
-    public String getAccountType() {
+    String getAccountType() {
         return accountType;
     }
 }

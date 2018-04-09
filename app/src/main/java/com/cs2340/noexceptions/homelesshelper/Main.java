@@ -10,9 +10,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -20,26 +20,23 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.w3c.dom.Text;
 
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
+/**
+ * The Main activity representing the list of shelters
+ */
 public class Main extends AppCompatActivity {
-    static String currentShelter;
-    ArrayAdapter<Shelter> shelterView;
-    private DatabaseReference database;
-    ArrayList<Shelter> shelterTest = new ArrayList<>();
+    private static String currentShelter;
+    private ArrayAdapter<Shelter> shelterView;
+    private final ArrayList<Shelter> shelterTest = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        database = FirebaseDatabase.getInstance().getReference();
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference database = db.getReference();
         DatabaseReference ref = database.child("shelters");
         shelterView = new ShelterAdapter(this, shelterTest);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -47,7 +44,9 @@ public class Main extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Shelter s = snapshot.getValue(Shelter.class);
-                    s.updateAllNeeded();
+                    if (s != null) {
+                        s.updateAllNeeded();
+                    }
                     shelterTest.add(s);
                     shelterView.notifyDataSetChanged();
                 }
@@ -67,11 +66,11 @@ public class Main extends AppCompatActivity {
 
 
         // Create ArrayAdapter for Shelters
-        final ListView listView = (ListView) findViewById(R.id.shelterList);
+        final ListView listView = findViewById(R.id.shelterList);
         listView.setAdapter(shelterView);
 
         // Search functionality
-        EditText inputSearch = (EditText) findViewById(R.id.inputSearch);
+        EditText inputSearch = findViewById(R.id.inputSearch);
         inputSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -80,7 +79,8 @@ public class Main extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                shelterView.getFilter().filter(charSequence);
+                Filter viewFilter = shelterView.getFilter();
+                viewFilter.filter(charSequence);
             }
 
             @Override
@@ -102,7 +102,7 @@ public class Main extends AppCompatActivity {
             }
         });
 
-        ImageView profile = (ImageView) findViewById(R.id.profile);
+        ImageView profile = findViewById(R.id.profile);
         profile.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -111,7 +111,7 @@ public class Main extends AppCompatActivity {
             }
         });
 
-        ImageView maps = (ImageView) findViewById(R.id.shelterMap);
+        ImageView maps = findViewById(R.id.shelterMap);
         maps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -121,6 +121,10 @@ public class Main extends AppCompatActivity {
         });
     }
 
+    /**
+     * A method that will return the current shelter that the user selected
+     * @return The current shelter's name clicked
+     */
     public static String getCurrentShelter() {
         return currentShelter;
     }

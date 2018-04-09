@@ -31,9 +31,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import android.util.Log;
 
@@ -56,11 +54,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private static final int REQUEST_READ_CONTACTS = 0;
 
     /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-
-    /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private UserLoginTask mAuthTask = null;
@@ -70,7 +63,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-    private Button backButton;
     static String currentUser;
     private boolean passwordValid;
 
@@ -79,14 +71,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
-        usernameView = (AutoCompleteTextView) findViewById(R.id.username);
+        usernameView = findViewById(R.id.username);
         populateAutoComplete();
 
-        mPasswordView = (EditText) findViewById(R.id.password);
+        mPasswordView = findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
+                if ((id == EditorInfo.IME_ACTION_DONE) || (id == EditorInfo.IME_NULL)) {
                     attemptLogin();
                     return true;
                 }
@@ -94,7 +86,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        Button mUsernameSignInButton = (Button) findViewById(R.id.usernameSignInButton);
+        Button mUsernameSignInButton = findViewById(R.id.usernameSignInButton);
         mUsernameSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -104,8 +96,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
-        backButton = findViewById(R.id.loginToHome);
+        Button backButton = findViewById(R.id.loginToHome);
         backButton.setOnClickListener(new OnClickListener() {
+            @Override
             public void onClick(View v) {
                 Intent toHome = new Intent(getBaseContext(), Home.class);
                 startActivity(toHome);
@@ -150,7 +143,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         if (requestCode == REQUEST_READ_CONTACTS) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if ((grantResults.length == 1)
+                    && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 populateAutoComplete();
             }
         }
@@ -210,14 +204,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private boolean isUsernameValid(String username) {
-        //TODO: Replace this with your own logic
-        return true;
+        return username.length() >= 1;
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return true;
-        //return password.length() > 4;
+        return password.length() >= 1;
     }
 
     /**
@@ -335,10 +326,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-                            if (userSnapshot.child("userName").getValue().toString().equals(mUsername)) {
-                                if (userSnapshot.child("password").getValue().toString().equals(mPassword)) {
-                                    passwordValid = true;
-                                    currentUser = mUsername;
+                            Object userNameObj = userSnapshot.child("userName").getValue();
+                            Object passwordObj = userSnapshot.child("password").getValue();
+                            if ((userNameObj != null) && (passwordObj != null)) {
+                                String userName = userNameObj.toString();
+                                if (userName.equals(mUsername)) {
+                                    String password = passwordObj.toString();
+                                    if (password.equals(mPassword)) {
+                                        passwordValid = true;
+                                        currentUser = mUsername;
+                                    }
                                 }
                             }
                         }
@@ -350,7 +347,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             });
                 try {
                 // Simulate network access.
-                Thread.sleep(2000);
+                Thread.sleep(4000);
             } catch (InterruptedException e) {
                 Log.d("TAG", "LoginActivity Error: " + e);
             }

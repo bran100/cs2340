@@ -2,8 +2,6 @@ package com.cs2340.noexceptions.homelesshelper;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -11,25 +9,21 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
+/**
+ * An activity for the profile screen of the app
+ */
 public class Profile extends AppCompatActivity {
     private static User user;
-    private static String userName;
-    private boolean userSetup;
     private EditText numPeople;
     private HomelessPerson currentHomeless;
     private Button vacate;
@@ -39,13 +33,13 @@ public class Profile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setUpUser();
     }
 
     private void setUpOnClicks() {
-        Button logOut = (Button) findViewById(R.id.logoutButton);
+        Button logOut = findViewById(R.id.logoutButton);
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -53,7 +47,7 @@ public class Profile extends AppCompatActivity {
                 startActivity(toHome);
             }
         });
-        final ImageView shelters = (ImageView) findViewById(R.id.shelterList);
+        final ImageView shelters = findViewById(R.id.shelterList);
         shelters.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -62,7 +56,7 @@ public class Profile extends AppCompatActivity {
             }
         });
 
-        ImageView map = (ImageView) findViewById(R.id.shelterMap);
+        ImageView map = findViewById(R.id.shelterMap);
         map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -71,7 +65,7 @@ public class Profile extends AppCompatActivity {
             }
         });
 
-        ImageView settings = (ImageView) findViewById(R.id.userSettings);
+        ImageView settings = findViewById(R.id.userSettings);
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -79,8 +73,8 @@ public class Profile extends AppCompatActivity {
                 startActivity(toMain);
             }
         });
-        shelterName = (EditText) findViewById(R.id.shelterName);
-        vacate = (Button) findViewById(R.id.cancelReservation);
+        shelterName = findViewById(R.id.shelterName);
+        vacate = findViewById(R.id.cancelReservation);
         vacate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -91,14 +85,18 @@ public class Profile extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             Shelter s = snapshot.getValue(Shelter.class);
-                            if (s.getName().equals(currentHomeless.getReservedShelter())) {
+                            if ((s != null)
+                                    && (s.getName().equals(currentHomeless.getReservedShelter()))) {
                                 s.updateCapacity(currentHomeless.numPeople * -1);
-                                DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-                                DatabaseReference ref = database.child("users").child("User").child(currentHomeless.userName);
-                                DatabaseReference refShelter = database.child("shelters").child(s.getId());
-                                Map<String,Object> updateShelterMap = new HashMap<>();
+                                DatabaseReference database = FirebaseDatabase
+                                        .getInstance().getReference();
+                                DatabaseReference ref = database.child("users").child("User")
+                                        .child(currentHomeless.userName);
+                                DatabaseReference refShelter = database.child("shelters")
+                                        .child(s.getId());
+                                Map<String, Object> updateShelterMap = new HashMap<>();
                                 updateShelterMap.put("capacity", s.getCapacity());
-                                Map<String,Object> updateMap = new HashMap<>();
+                                Map<String, Object> updateMap = new HashMap<>();
                                 updateMap.put("reserved", false);
                                 updateMap.put("reservedShelter", "");
                                 currentHomeless.setReserved(false);
@@ -121,13 +119,13 @@ public class Profile extends AppCompatActivity {
         });
     }
     private void recordNumPeople() {
-        numPeople = (EditText)findViewById(R.id.numPeople);
+        numPeople = findViewById(R.id.numPeople);
         numPeople.setText(Integer.toString(currentHomeless.getNumPeople()));
-        Button submit = (Button) findViewById(R.id.recordNumPeople);
+        Button submit = findViewById(R.id.recordNumPeople);
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (numPeople.getText().toString().equals("")) {
+                if ("".equals(numPeople.getText().toString())) {
                     numPeople.setError("Please enter a valid number (Greater than 0");
                 } else {
                     int numToRecord = Integer.parseInt(numPeople.getText().toString());
@@ -137,8 +135,10 @@ public class Profile extends AppCompatActivity {
                         if (user instanceof HomelessPerson) {
                             HomelessPerson currentUser = (HomelessPerson) user;
                             currentUser.setNumPeople(numToRecord);
-                            DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-                            DatabaseReference ref = database.child("users").child("User").child(currentUser.getUserName());
+                            DatabaseReference database = FirebaseDatabase
+                                    .getInstance().getReference();
+                            DatabaseReference ref = database.child("users")
+                                    .child("User").child(currentUser.getUserName());
                             Map<String, Object> updateMap = new HashMap<>();
                             updateMap.put("numPeople", numToRecord);
                             ref.updateChildren(updateMap);
@@ -149,8 +149,8 @@ public class Profile extends AppCompatActivity {
         });
     }
     private void checkReserved() {
-        Button vacate = (Button) findViewById(R.id.cancelReservation);
-        EditText shelterName = (EditText) findViewById(R.id.shelterName);
+        Button vacate = findViewById(R.id.cancelReservation);
+        EditText shelterName = findViewById(R.id.shelterName);
         if (currentHomeless != null) {
             if (currentHomeless.getReserved()) {
                 shelterName.setText(currentHomeless.getReservedShelter());
@@ -163,7 +163,6 @@ public class Profile extends AppCompatActivity {
     }
     private void setUpUser() {
         final String userInfo = LoginActivity.currentUser;
-        userName = LoginActivity.currentUser;
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
         DatabaseReference ref = database.child("users");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -172,8 +171,10 @@ public class Profile extends AppCompatActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Log.d("TAG", snapshot.toString());
                     for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-                        if (userSnapshot.child("userName").getValue().toString().equals(userInfo)) {
-                            if (snapshot.getValue().toString().equals("Admin")) {
+                        Object userNameObj = userSnapshot.child("userName").getValue();
+                        if ((userNameObj != null) && (userNameObj.toString().equals(userInfo))) {
+                            if ((snapshot.getValue() != null)
+                                    && ("Admin".equals(snapshot.getValue().toString()))) {
                                 user = userSnapshot.getValue(Admin.class);
                             } else {
                                 user = userSnapshot.getValue(HomelessPerson.class);
@@ -196,9 +197,12 @@ public class Profile extends AppCompatActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        userSetup = true;
-        Log.d("TAG", "asdass");
     }
+
+    /**
+     * A method that will return the current user
+     * @return The current user
+     */
     public static User getUser() {
         return user;
     }

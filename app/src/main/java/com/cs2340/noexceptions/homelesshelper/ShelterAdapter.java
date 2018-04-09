@@ -2,6 +2,7 @@ package com.cs2340.noexceptions.homelesshelper;
 
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,21 +11,27 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-/**
- * Created by nenadstanic on 3/5/18.
- */
 
-public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable {
-    private Context mContext;
+/**
+ * A custom array adapter for shelters
+ */
+class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable {
+    private final Context mContext;
     private List<Shelter> shelterList = new ArrayList<>();
     private List<Shelter> shelterListCopy = new ArrayList<>();
-    private LayoutInflater layoutInflater;
-    public ShelterAdapter(Context context, ArrayList<Shelter> list) {
+    private final LayoutInflater layoutInflater;
+
+    /**
+     * The constructor for a custom array adapter
+     * @param context The context of the app
+     * @param list A list of shelters
+     */
+    public ShelterAdapter(Context context, List<Shelter> list) {
         super(context, android.R.layout.simple_list_item_1, list);
         mContext = context;
         shelterList = list;
@@ -32,22 +39,25 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
         layoutInflater = LayoutInflater.from(context);
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        convertView = layoutInflater.inflate(R.layout.shelter_item,null);
-        View listItem = convertView;
-        if(listItem == null)
-            listItem = LayoutInflater.from(mContext).inflate(R.layout.shelter_item,parent,false);
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+        View temp = convertView;
+        temp = layoutInflater.inflate(R.layout.shelter_item, parent, false);
+        View listItem = temp;
+        if(listItem == null) {
+            listItem = LayoutInflater.from(mContext).inflate(R.layout.shelter_item, parent, false);
+        }
 
         Shelter currentShelter = shelterListCopy.get(position);
 
-        TextView shelter = (TextView) listItem.findViewById(R.id.textView_shelter);
+        TextView shelter = listItem.findViewById(R.id.textView_shelter);
         shelter.setText(currentShelter.getName());
 
-        TextView age = (TextView) listItem.findViewById(R.id.textView_age);
+        TextView age = listItem.findViewById(R.id.textView_age);
         age.setText(currentShelter.getAge());
 
-        TextView gender = (TextView) listItem.findViewById(R.id.textView_gender);
+        TextView gender = listItem.findViewById(R.id.textView_gender);
         gender.setText(currentShelter.getGender());
 
         return listItem;
@@ -62,12 +72,13 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
         if(shelterListCopy != null){
             try {
                 return shelterListCopy.get(arg0);
-            } catch (IndexOutOfBoundsException e) {
+            } catch (Exception e) {
                 return null;
             }
         }
         return null;
     }
+    @NonNull
     @Override
     public Filter getFilter() {
         return new Filter() {
@@ -75,24 +86,31 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
             @Override
             protected FilterResults performFiltering(CharSequence charSequence) {
                 FilterResults results = new FilterResults();
-                if (charSequence == null || charSequence.length() == 0) {
+                if ((charSequence == null) || (charSequence.length() == 0)) {
                     results.count = shelterList.size();
                     results.values = shelterList;
                 } else {
-                    List<Shelter> resultsData = new ArrayList<>();
+                    Collection<Shelter> resultsData = new ArrayList<>();
                     String searchstr = charSequence.toString().toLowerCase();
                     for (Shelter s : shelterList) {
                         if (searchstr.startsWith("anyone") && !resultsData.contains(s)) {
                             resultsData.add(s);
                         }
-                        if (s.getName().toLowerCase().contains(searchstr) && !resultsData.contains(s)) {
+                        if (s.getName().toLowerCase().contains(searchstr)
+                                && !resultsData.contains(s)) {
                             resultsData.add(s);
                         }
-                        if ((s.getAge().toLowerCase().startsWith(searchstr) || s.getGender().contains("Anyone")) && !resultsData.contains(s)) {
+                        if ((s.getAge().toLowerCase().contains(searchstr)
+                                || s.getAge().toLowerCase().startsWith(searchstr)
+                                || s.getGender().contains("Anyone"))
+                                && !resultsData.contains(s)) {
                             resultsData.add(s);
                         }
-                        if ((s.getGender().toLowerCase().startsWith(searchstr) || (s.getGender().toLowerCase().contains("/")
-                                && (searchstr.equals("male") || searchstr.equals("female"))) && !resultsData.contains(s))) {
+                        if ((s.getGender().toLowerCase().startsWith(searchstr)
+                                || ((s.getGender().toLowerCase().contains("/"))
+                                && (("male".equals(searchstr)
+                                || "female".equals(searchstr)))))
+                                && (!resultsData.contains(s))) {
                             resultsData.add(s);
                         }
                     }

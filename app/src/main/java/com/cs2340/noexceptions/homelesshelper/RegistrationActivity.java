@@ -3,8 +3,6 @@ package com.cs2340.noexceptions.homelesshelper;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -25,6 +23,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * An activity representing the registration screen for the app
+ */
 public class RegistrationActivity extends AppCompatActivity {
     private EditText usernameView;
     private EditText passwordView;
@@ -37,18 +38,19 @@ public class RegistrationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Registration");
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Registration");
+        }
 
         database = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference ref = database.child("users");
 
 
-        nameView = (EditText) findViewById(R.id.name);
-        usernameView = (EditText) findViewById(R.id.username);
-        passwordView = (EditText) findViewById(R.id.password);
-        userTypeView = (Spinner) findViewById(R.id.userType);
+        nameView = findViewById(R.id.name);
+        usernameView = findViewById(R.id.username);
+        passwordView = findViewById(R.id.password);
+        userTypeView = findViewById(R.id.userType);
         userTypeView.setPrompt("User Type");
 
 
@@ -62,11 +64,12 @@ public class RegistrationActivity extends AppCompatActivity {
 
 
 
-        ArrayAdapter<String> adapterClass = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item, new String[]{"Admin", "User"});
+        ArrayAdapter<String> adapterClass = new ArrayAdapter<>(
+                this,android.R.layout.simple_spinner_item, new String[]{"Admin", "User"});
         adapterClass.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         userTypeView.setAdapter(adapterClass);
 
-        Button registrationButton = (Button) findViewById(R.id.registrationButton);
+        Button registrationButton = findViewById(R.id.registrationButton);
         registrationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -74,7 +77,7 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
 
-        Button backButton = (Button) findViewById(R.id.backButton);
+        Button backButton = findViewById(R.id.backButton);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,7 +97,8 @@ public class RegistrationActivity extends AppCompatActivity {
         boolean userExists = userExists(username, userType);
         if (!userExists) {
             addUser(username, password, name, userType);
-            Toast success = Toast.makeText(getApplicationContext(), "Successfully registered! \n Press back to Login", Toast.LENGTH_SHORT);
+            Toast success = Toast.makeText(getApplicationContext(),
+                    "Successfully registered! \n Press back to Login", Toast.LENGTH_SHORT);
             success.setGravity(Gravity.TOP,0,300);
             success.getView().setBackgroundColor(Color.parseColor("#55A8D2"));
             success.show();
@@ -106,7 +110,7 @@ public class RegistrationActivity extends AppCompatActivity {
         }
     }
 
-    protected static boolean userExists(String user, final String userType) {
+    private static boolean userExists(String user, final String userType) {
         DatabaseReference ref = database.child("users").child(userType);
         final String userName = user;
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -140,11 +144,12 @@ public class RegistrationActivity extends AppCompatActivity {
         Map<String, Object> userMap = new HashMap<>();
         Admin a;
         HomelessPerson hp;
-        if (userType.toLowerCase().equals("admin")) {
+        if ("admin".equals(userType.toLowerCase())) {
             a = new Admin(name, true, "", user, pass);
             userMap.put(user, a);
         } else {
-            hp = new HomelessPerson(name, true, "", user, pass, 0, "", false);
+            hp = new HomelessPerson(name, true, "",
+                    user, pass, 0, "", false);
             userMap.put(user, hp);
         }
         ref.updateChildren(userMap);

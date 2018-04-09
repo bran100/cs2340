@@ -1,12 +1,28 @@
 package com.cs2340.noexceptions.homelesshelper;
 
 
-
-public class HomelessPerson extends User {
-    public int numPeople;
+/**
+ * HomelessPerson class representing an homeless person.
+ */
+class HomelessPerson extends User {
+    int numPeople;
     private String reservedShelter;
-    public boolean reserved;
-    public HomelessPerson(String name, boolean accountState, String contact_info, String username, String password, int numPeople, String reservedShelter, boolean reserved) {
+    private boolean reserved;
+
+    /**
+     * A constructor for creating an instance of a homeless person
+     * @param name The name of the homeless person
+     * @param accountState True or False whether or not the user is banned
+     * @param contact_info The phone number of the user
+     * @param username The username
+     * @param password The password
+     * @param numPeople The number of people they are reserving vacancies
+     * @param reservedShelter The shelter they have reserved
+     * @param reserved True or False of whether or not they have a shelter reserved
+     */
+    public HomelessPerson(String name, boolean accountState, String contact_info, String username,
+                          String password, int numPeople,
+                          String reservedShelter, boolean reserved) {
         this.name = name;
         this.accountState = accountState;
         this.contact_info = contact_info;
@@ -17,9 +33,19 @@ public class HomelessPerson extends User {
         this.reservedShelter = reservedShelter;
         this.reserved = reserved;
     }
+
+    /**
+     * Default constructor for HomelessPerson
+     */
     public HomelessPerson() {
 
     }
+
+    /**
+     * This method will reserve a vacancy for a user in the given shelter
+     * @param s A shelter
+     * @return True or False of whether or not the shelter was reserved
+     */
     boolean reserveVacancy(Shelter s) {
         boolean check;
         if (!reserved) {
@@ -32,7 +58,12 @@ public class HomelessPerson extends User {
         }
         return false;
     }
-    public String getReservedShelter() {
+
+    /**
+     * A method that will return a homeless person's reserved shelter's name
+     * @return A string representing the reserved shelter
+     */
+    CharSequence getReservedShelter() {
         return reservedShelter;
     }
     void setNumPeople(int numPeople) {
@@ -51,10 +82,6 @@ public class HomelessPerson extends User {
         return numPeople;
     }
 
-    public void undoReservation() {
-        reserved = false;
-        reservedShelter = "";
-    }
     public String toString() {
         return name + ":\n Reserved:" + reserved + "\nReserved Shelter: " + reservedShelter;
     }
