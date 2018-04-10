@@ -132,4 +132,12 @@ public class ExampleUnitTest {
         assertEquals("Male/Female/Unknown", s.getGender());
     }
 
+    // Bowen
+    @Test
+    public void testFilterByName() {
+        Shelter shelter = new Shelter("", "The Shepherd's Inn", "", "",
+                "", "", "", "");
+        assertEquals("The Shepherd's Inn", shelter.getName());
+    }
+
 }
