@@ -2,10 +2,14 @@ package com.cs2340.noexceptions.homelesshelper;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -19,10 +23,12 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewPropertyAnimator;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -33,7 +39,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -56,6 +61,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
+    @Nullable
     private UserLoginTask mAuthTask = null;
 
     // UI references.
@@ -65,7 +71,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mLoginFormView;
     static String currentUser;
     private boolean passwordValid;
-
+    private boolean passwordCheck = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,8 +116,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         if (!mayRequestContacts()) {
             return;
         }
-
-        getLoaderManager().initLoader(0, null, this);
+        LoaderManager lm = getLoaderManager();
+        lm.initLoader(0, null, this);
     }
 
     private boolean mayRequestContacts() {
@@ -122,8 +128,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             return true;
         }
         if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-            Snackbar.make(usernameView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
+            Snackbar a = Snackbar.make(usernameView,
+                    R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE);
+            a.setAction(android.R.string.ok, new View.OnClickListener() {
                         @Override
                         @TargetApi(Build.VERSION_CODES.M)
                         public void onClick(View v) {
@@ -166,8 +173,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String username = usernameView.getText().toString();
-        String password = mPasswordView.getText().toString();
+        Editable u = usernameView.getText();
+        String username = u.toString();
+        Editable pass = mPasswordView.getText();
+        String password = pass.toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -203,11 +212,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
-    private boolean isUsernameValid(String username) {
+    private boolean isUsernameValid(CharSequence username) {
         return username.length() >= 1;
     }
 
-    private boolean isPasswordValid(String password) {
+    private boolean isPasswordValid(CharSequence password) {
         return password.length() >= 1;
     }
 
@@ -219,32 +228,30 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        Resources r = getResources();
+        int shortAnimTime = r.getInteger(android.R.integer.config_shortAnimTime);
 
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
+        mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+        ViewPropertyAnimator animate = mLoginFormView.animate();
+        ViewPropertyAnimator duration = animate.setDuration(shortAnimTime);
+        ViewPropertyAnimator alpha = duration.alpha(show ? 0 : 1);
+        alpha.setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+                    }
+                });
 
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
+        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+        ViewPropertyAnimator animate2 = mProgressView.animate();
+        ViewPropertyAnimator duration2 = animate2.setDuration(shortAnimTime);
+        ViewPropertyAnimator alpha2 = duration2.alpha(show ? 1 : 0);
+        alpha2.setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            }
+        });
     }
 
     @Override
@@ -298,13 +305,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         };
 
         int ADDRESS = 0;
-        int IS_PRIMARY = 1;
     }
 
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
+    @SuppressLint("StaticFieldLeak")
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mUsername;
@@ -318,7 +325,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         @Override
         protected Boolean doInBackground(Void... params) {
             passwordValid = false;
-            DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+            FirebaseDatabase fireBase = FirebaseDatabase.getInstance();
+            DatabaseReference database = fireBase.getReference();
             DatabaseReference ref = database.child("users");
 
             ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -326,30 +334,31 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-                            Object userNameObj = userSnapshot.child("userName").getValue();
-                            Object passwordObj = userSnapshot.child("password").getValue();
+                            DataSnapshot ds = userSnapshot.child("userName");
+                            DataSnapshot ds2 = userSnapshot.child("password");
+                            Object userNameObj = ds.getValue();
+                            Object passwordObj = ds2.getValue();
                             if ((userNameObj != null) && (passwordObj != null)) {
                                 String userName = userNameObj.toString();
                                 if (userName.equals(mUsername)) {
                                     String password = passwordObj.toString();
                                     if (password.equals(mPassword)) {
                                         passwordValid = true;
-                                        currentUser = mUsername;
+                                        setCurrentUser(mUsername);
                                     }
                                 }
                             }
                         }
                     }
+                    passwordCheck = true;
                 }
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                 }
             });
-                try {
-                // Simulate network access.
-                Thread.sleep(4000);
-            } catch (InterruptedException e) {
-                Log.d("TAG", "LoginActivity Error: " + e);
+            int i = 0;
+            while ((!passwordCheck) && (i > -1)) {
+                i++;
             }
             return passwordValid;
         }
@@ -374,6 +383,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
         }
+    }
+    private static void setCurrentUser(String userName) {
+        currentUser = userName;
     }
 }
 

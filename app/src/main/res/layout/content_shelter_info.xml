@@ -344,6 +344,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Reserve Vacancy"
+            android:theme="@style/AppTheme"
             android:visibility="visible" />
 
     </LinearLayout>
@@ -363,102 +364,61 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/information">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/profileText"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:contentDescription="Profile"
+            android:drawableTop="@drawable/people"
+            android:scaleX=".75"
+            android:scaleY=".75"
+            android:text="Profile"
+            android:textAlignment="center"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textSize="18sp" />
 
-            <ImageView
-                android:id="@+id/profile"
-                android:layout_width="match_parent"
-                android:layout_height="41dp"
-                android:contentDescription="user profile"
-                app:srcCompat="@drawable/people" />
-
-            <TextView
-                android:id="@+id/profileText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:contentDescription="Profile"
-                android:text="Profile"
-                android:textAlignment="center"
-                android:textColor="@color/common_google_signin_btn_text_dark_focused"
-                />
-
-        </LinearLayout>
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/shelterText"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:contentDescription="Shelters"
+            android:drawableTop="@drawable/home"
+            android:scaleX=".75"
+            android:scaleY=".75"
+            android:text="Shelters"
+            android:textAlignment="center"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textSize="18sp" />
 
-            <ImageView
-                android:id="@+id/shelterList"
-                android:layout_width="match_parent"
-                android:layout_height="41dp"
-                android:contentDescription="shelter list"
-                app:srcCompat="@drawable/home" />
-
-            <TextView
-                android:id="@+id/shelterText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:contentDescription="Shelters"
-                android:text="Shelters"
-                android:textAlignment="center"
-                android:textColor="@color/common_google_signin_btn_text_dark_focused"
-                />
-        </LinearLayout>
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/shelterMapText"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:contentDescription="Map"
+            android:drawableTop="@drawable/map"
+            android:scaleX=".75"
+            android:scaleY=".75"
+            android:text="Map"
+            android:textAlignment="center"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textSize="18sp" />
 
-            <ImageView
-                android:id="@+id/shelterMap"
-                android:layout_width="match_parent"
-                android:layout_height="41dp"
-                android:contentDescription="shelter map"
-                app:srcCompat="@drawable/map" />
-
-            <TextView
-                android:id="@+id/shelterMapText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:contentDescription="Map"
-                android:text="Map"
-                android:textAlignment="center"
-                android:textColor="@color/common_google_signin_btn_text_dark_focused"
-                />
-
-        </LinearLayout>
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/userSettingsText"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/userSettings"
-                android:layout_width="match_parent"
-                android:layout_height="41dp"
-                android:contentDescription="user settings"
-                app:srcCompat="@drawable/gear" />
-
-            <TextView
-                android:id="@+id/userSettingsText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:contentDescription="Settings"
-                android:text="Settings"
-                android:textAlignment="center"
-                android:textColor="@color/common_google_signin_btn_text_dark_focused" />
-        </LinearLayout>
+            android:contentDescription="Settings"
+            android:drawableTop="@drawable/gear"
+            android:scaleX=".75"
+            android:scaleY=".75"
+            android:text="Settings"
+            android:textAlignment="center"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textSize="18sp" />
 
     </LinearLayout>
 

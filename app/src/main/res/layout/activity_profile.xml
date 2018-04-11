@@ -5,7 +5,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.cs2340.noexceptions.homelesshelper.Profile">
+    tools:context="com.cs2340.noexceptions.homelesshelper.Profile"
+    android:background="@drawable/background"
+    tools:ignore="Overdraw">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

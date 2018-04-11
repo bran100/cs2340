@@ -10,7 +10,6 @@ public class User {
     String name;
     boolean accountState;
     String contact_info;
-    String accountType;
 
     String getUserName() {
         return userName;
@@ -18,16 +17,12 @@ public class User {
     String getPassword() {
         return password;
     }
+
     String getName() {
         return name;
-    }
-    boolean getAccountState() {
-        return accountState;
     }
     String getContact_info() {
         return contact_info;
     }
-    String getAccountType() {
-        return accountType;
-    }
+
 }

@@ -3,8 +3,10 @@ package com.cs2340.noexceptions.homelesshelper;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -31,8 +33,9 @@ public class RegistrationActivity extends AppCompatActivity {
     private EditText passwordView;
     private Spinner userTypeView;
     private EditText nameView;
-    private static DatabaseReference database;
-    private static boolean userExists;
+    private final FirebaseDatabase fireBase = FirebaseDatabase.getInstance();
+    private DatabaseReference database;
+    private boolean userExists;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,10 +44,11 @@ public class RegistrationActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Registration");
+            ActionBar sab = getSupportActionBar();
+            sab.setTitle("Registration");
         }
 
-        database = FirebaseDatabase.getInstance().getReference();
+        database = fireBase.getReference();
 
 
         nameView = findViewById(R.id.name);
@@ -90,9 +94,13 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     private void attemptRegistration() {
-        String username = usernameView.getText().toString();
-        String password = passwordView.getText().toString();
-        String name = nameView.getText().toString();
+        Editable userText = usernameView.getText();
+        Editable passText = passwordView.getText();
+        Editable nameText = nameView.getText();
+
+        String username = userText.toString();
+        String password = passText.toString();
+        String name = nameText.toString();
         String userType = (String) userTypeView.getSelectedItem();
         boolean userExists = userExists(username, userType);
         if (!userExists) {
@@ -100,7 +108,8 @@ public class RegistrationActivity extends AppCompatActivity {
             Toast success = Toast.makeText(getApplicationContext(),
                     "Successfully registered! \n Press back to Login", Toast.LENGTH_SHORT);
             success.setGravity(Gravity.TOP,0,300);
-            success.getView().setBackgroundColor(Color.parseColor("#55A8D2"));
+            View v = success.getView();
+            v.setBackgroundColor(Color.parseColor("#55A8D2"));
             success.show();
 
         } else {
@@ -110,14 +119,16 @@ public class RegistrationActivity extends AppCompatActivity {
         }
     }
 
-    private static boolean userExists(String user, final String userType) {
-        DatabaseReference ref = database.child("users").child(userType);
+    private boolean userExists(String user, final String userType) {
+        DatabaseReference usersRef = database.child("users");
+        DatabaseReference ref = usersRef.child(userType);
         final String userName = user;
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    if (snapshot.getKey().equals(userName)) {
+                    String key = snapshot.getKey();
+                    if (key.equals(userName)) {
                         userExists = true;
                         break;
                     }
@@ -140,16 +151,17 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     private void addUser(String user, String pass, String name, String userType) {
-        DatabaseReference ref = database.child("users").child(userType);
+        DatabaseReference usersRef = database.child("users");
+        DatabaseReference ref = usersRef.child(userType);
         Map<String, Object> userMap = new HashMap<>();
         Admin a;
         HomelessPerson hp;
         if ("admin".equals(userType.toLowerCase())) {
-            a = new Admin(name, true, "", user, pass);
+            a = new Admin(name, user, pass);
             userMap.put(user, a);
         } else {
-            hp = new HomelessPerson(name, true, "",
-                    user, pass, 0, "", false);
+            hp = new HomelessPerson(name,
+                    user, pass);
             userMap.put(user, hp);
         }
         ref.updateChildren(userMap);

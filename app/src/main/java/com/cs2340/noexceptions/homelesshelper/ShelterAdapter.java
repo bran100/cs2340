@@ -42,23 +42,24 @@ class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable {
     @NonNull
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
-        View temp = convertView;
+        View temp;
         temp = layoutInflater.inflate(R.layout.shelter_item, parent, false);
         View listItem = temp;
         if(listItem == null) {
-            listItem = LayoutInflater.from(mContext).inflate(R.layout.shelter_item, parent, false);
+            LayoutInflater li = LayoutInflater.from(mContext);
+            listItem = li.inflate(R.layout.shelter_item, parent, false);
         }
 
         Shelter currentShelter = shelterListCopy.get(position);
-
+        String[] shelterInfo = currentShelter.getEditInfo();
         TextView shelter = listItem.findViewById(R.id.textView_shelter);
-        shelter.setText(currentShelter.getName());
+        shelter.setText(shelterInfo[0]);
 
         TextView age = listItem.findViewById(R.id.textView_age);
-        age.setText(currentShelter.getAge());
+        age.setText(shelterInfo[7]);
 
         TextView gender = listItem.findViewById(R.id.textView_gender);
-        gender.setText(currentShelter.getGender());
+        gender.setText(shelterInfo[1]);
 
         return listItem;
     }
@@ -91,28 +92,10 @@ class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable {
                     results.values = shelterList;
                 } else {
                     Collection<Shelter> resultsData = new ArrayList<>();
-                    String searchstr = charSequence.toString().toLowerCase();
+                    String upperSearch = charSequence.toString();
+                    String searchStr = upperSearch.toLowerCase();
                     for (Shelter s : shelterList) {
-                        if (searchstr.startsWith("anyone") && !resultsData.contains(s)) {
-                            resultsData.add(s);
-                        }
-                        if (s.getName().toLowerCase().contains(searchstr)
-                                && !resultsData.contains(s)) {
-                            resultsData.add(s);
-                        }
-                        if ((s.getAge().toLowerCase().contains(searchstr)
-                                || s.getAge().toLowerCase().startsWith(searchstr)
-                                || s.getGender().contains("Anyone"))
-                                && !resultsData.contains(s)) {
-                            resultsData.add(s);
-                        }
-                        if ((s.getGender().toLowerCase().startsWith(searchstr)
-                                || ((s.getGender().toLowerCase().contains("/"))
-                                && (("male".equals(searchstr)
-                                || "female".equals(searchstr)))))
-                                && (!resultsData.contains(s))) {
-                            resultsData.add(s);
-                        }
+                        helper(searchStr,resultsData,s);
                     }
                     results.count = resultsData.size();
                     results.values = resultsData;
@@ -126,5 +109,42 @@ class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable {
                 notifyDataSetChanged();
             }
         };
+    }
+
+    private void helper(String searchStr, Collection<Shelter> resultsData, Shelter s) {
+        if (searchStr.startsWith("anyone") && !resultsData.contains(s)) {
+            resultsData.add(s);
+        }
+        helperName(searchStr, resultsData, s);
+        helperAge(searchStr, resultsData, s);
+        helperGender(searchStr, resultsData, s);
+    }
+    private void helperName(CharSequence searchStr, Collection<Shelter> resultsData, Shelter s) {
+        String[] shelterInfo = s.getEditInfo();
+        String nameLower = shelterInfo[0].toLowerCase();
+        if (nameLower.contains(searchStr)
+                && !resultsData.contains(s)) {
+            resultsData.add(s);
+        }
+    }
+    private void helperAge(String searchStr, Collection<Shelter> resultsData, Shelter s) {
+        String[] shelterInfo = s.getEditInfo();
+        String ageLower = shelterInfo[7].toLowerCase();
+        if ((ageLower.contains(searchStr)
+                || ageLower.startsWith(searchStr))
+                && !resultsData.contains(s)) {
+            resultsData.add(s);
+        }
+    }
+    private void helperGender(String searchStr, Collection<Shelter> resultsData, Shelter s) {
+        String[] shelterInfo = s.getEditInfo();
+        String genderLower = shelterInfo[1].toLowerCase();
+        if ((genderLower.startsWith(searchStr)
+                || ((genderLower.contains("/"))
+                && (("male".equals(searchStr)
+                || "female".equals(searchStr)))))
+                && (!resultsData.contains(s))) {
+            resultsData.add(s);
+        }
     }
 }

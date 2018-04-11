@@ -3,6 +3,7 @@ package com.cs2340.noexceptions.homelesshelper;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
@@ -41,8 +42,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+        FragmentManager fm = getSupportFragmentManager();
+        SupportMapFragment mapFragment = (SupportMapFragment) fm.findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
 
@@ -58,7 +59,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+        FirebaseDatabase fireBase = FirebaseDatabase.getInstance();
+        DatabaseReference database = fireBase.getReference();
         DatabaseReference ref = database.child("shelters");
         mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(33.753746,-84.386330)));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(10));
@@ -67,22 +69,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Shelter s = snapshot.getValue(Shelter.class);
+                    String[] shelterInfo;
                     if (s != null) {
+                        shelterInfo = s.shelterMapsInfo();
                         s.updateAllNeeded();
-                    }
-                    double latitude = 0;
-                    double longitude = 0;
-                    if (s != null) {
-                        latitude = Double.parseDouble(s.getLatitude());
-                        longitude = Double.parseDouble(s.getLongitude());
+                        double latitude = Double.parseDouble(shelterInfo[0]);
+                        double longitude = Double.parseDouble(shelterInfo[1]);
+                        LatLng shelter = new LatLng(latitude,longitude);
 
-                    }
-                    LatLng shelter = new LatLng(latitude,longitude);
-                    Marker marker;
-                    if (s != null) {
-                        marker = mMap.addMarker(new MarkerOptions().position(shelter)
-                                .title(s.getName()).snippet(s.getTelephoneNumber()));
-                        shelterMarkers.put(s.getName(), marker);
+                        MarkerOptions mo = new MarkerOptions();
+                        MarkerOptions position = mo.position(shelter);
+                        MarkerOptions title = position.title(shelterInfo[2]);
+                        MarkerOptions snippet = title.snippet(shelterInfo[3]);
+                        Marker marker = mMap.addMarker(snippet);
+                        shelterMarkers.put(shelterInfo[2], marker);
                         shelters.add(s);
 
                     }
@@ -109,7 +109,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onInfoWindowClick(Marker marker) {
                 if (marker.getTitle() != null) {
-                    currentShelter = marker.getTitle();
+                    setCurrentShelter(marker.getTitle());
                     Intent shelterInfo = new Intent(getBaseContext(), ShelterInfo.class);
                     shelterInfo.putExtra("activity", "maps");
                     startActivity(shelterInfo);
@@ -132,26 +132,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     m.setVisible(true);
                 }
                 if ((charSequence != null) && (charSequence.length() != 0)) {
-                    String search = charSequence.toString().toLowerCase();
+                    String temp = charSequence.toString();
+                    String search = temp.toLowerCase();
                     Collection<Marker> visibleMarkers = new ArrayList<>();
                     for (Shelter s : shelters) {
-                        if (s.getName().toLowerCase().contains(search)
-                                && !visibleMarkers.contains(shelterMarkers.get(s.getName()))) {
-                            visibleMarkers.add(shelterMarkers.get(s.getName()));
-                        }
-                        if ((s.getAge().toLowerCase().contains(search)
-                                || s.getAge().toLowerCase().startsWith(search)
-                                || s.getGender().contains("Anyone"))
-                                && !visibleMarkers.contains(shelterMarkers.get(s.getName()))) {
-                            visibleMarkers.add(shelterMarkers.get(s.getName()));
-                        }
-                        if (((s.getGender().toLowerCase().startsWith(search)
-                                || (s.getGender().toLowerCase().contains("/")))
-                                && (("male".equals(search)
-                                || "female".equals(search))))
-                                && ((!visibleMarkers.contains(shelterMarkers.get(s.getName()))))) {
-                            visibleMarkers.add(shelterMarkers.get(s.getName()));
-                        }
+                        helper(search, visibleMarkers, s);
                     }
                     for (Marker m: shelterMarkers.values()) {
                         m.setVisible(false);
@@ -167,5 +152,48 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
         });
+    }
+    private static void setCurrentShelter(String shelter) {
+        currentShelter = shelter;
+    }
+    private void helper(String searchStr, Collection<Marker> visibleMarkers, Shelter s) {
+        String[] shelterInfo = s.getEditInfo();
+        if (searchStr.startsWith("anyone")
+                && !visibleMarkers.contains(shelterMarkers.get(shelterInfo[0]))) {
+            visibleMarkers.add(shelterMarkers.get(shelterInfo[0]));
+        }
+        helperName(searchStr, visibleMarkers, s);
+        helperAge(searchStr, visibleMarkers, s);
+        helperGender(searchStr, visibleMarkers, s);
+    }
+    private void helperName(CharSequence search, Collection<Marker> visibleMarkers, Shelter s) {
+        String[] shelterInfo = s.getEditInfo();
+        String nameLower = shelterInfo[0].toLowerCase();
+        if (nameLower.contains(search)
+                && !visibleMarkers.contains(shelterMarkers.get(shelterInfo[0]))) {
+            visibleMarkers.add(shelterMarkers.get(shelterInfo[0]));
+        }
+    }
+    private void helperAge(String search, Collection<Marker> visibleMarkers, Shelter s) {
+        String[] shelterInfo = s.getEditInfo();
+        String ageLower = shelterInfo[7].toLowerCase();
+        if ((ageLower.contains(search)
+                || ageLower.startsWith(search)
+                || shelterInfo[1].contains("Anyone"))
+                && !visibleMarkers.contains(shelterMarkers.get(shelterInfo[0]))) {
+            visibleMarkers.add(shelterMarkers.get(shelterInfo[0]));
+        }
+    }
+    private void helperGender(String search, Collection<Marker> visibleMarkers, Shelter s) {
+        String[] shelterInfo = s.getEditInfo();
+        String genderLower = shelterInfo[1].toLowerCase();
+        if ((genderLower.startsWith(search)
+                || genderLower.contains("/"))
+                && (("male".equals(search))
+                || ("female".equals(search)))
+                && ((!visibleMarkers
+                .contains(shelterMarkers.get(shelterInfo[0]))))) {
+            visibleMarkers.add(shelterMarkers.get(shelterInfo[0]));
+        }
     }
 }

@@ -22,46 +22,42 @@ public class ExampleUnitTest {
     //Nenad
 
     @Test
-    public void addition_isCorrect() throws Exception {
-        assertEquals(4, 2 + 2);
-    }
-    @Test
     public void testCapacityNASuccess() {
-        Shelter s = new Shelter("", "", "N/A", "",
-                "", "", "", "");
+        Shelter s = new Shelter("N/A", ""
+        );
         assertEquals(Integer.toString(50), s.getCapacity());
     }
     @Test
     public void testCapacityNAFail() {
-        Shelter s = new Shelter("", "", "30", "",
-                "", "", "", "");
+        Shelter s = new Shelter("30", ""
+        );
         assertNotEquals(Integer.toString(50), s.getCapacity());
     }
     @Test
     public void testSplit() {
         PowerMockito.mockStatic(Log.class);
-        Shelter s = new Shelter("", "", "10 Apartments, 20 Single Bed", "",
-                "", "", "", "");
+        Shelter s = new Shelter("10 Apartments, 20 Single Bed", ""
+        );
         assertEquals(Integer.toString(30), s.getCapacity());
     }
     @Test
     public void testSplitFail() {
-        Shelter s = new Shelter("", "", "10", "",
-                "", "", "", "");
+        Shelter s = new Shelter("10", ""
+        );
         assertEquals(Integer.toString(10), s.getCapacity());
     }
     @Test
     public void testNonIntegerException() {
         PowerMockito.mockStatic(Log.class);
-        Shelter s = new Shelter("", "", " Apartment", "",
-                "", "", "", "");
+        Shelter s = new Shelter(" Apartment", ""
+        );
         assertEquals(Integer.toString(0), s.getCapacity());
     }
     @Test
     public void testNotValidNumber() {
         PowerMockito.mockStatic(Log.class);
-        Shelter s = new Shelter("", "", "Rooms", "",
-                "", "", "", "");
+        Shelter s = new Shelter("Rooms", ""
+        );
         assertEquals(Integer.toString(0), s.getCapacity());
     }
 
@@ -69,36 +65,36 @@ public class ExampleUnitTest {
 
     @Test
     public void testFindAgeNewborn() {
-        Shelter s = new Shelter("", "", "10", "NEWBORNS",
-                "", "", "", "");
+        Shelter s = new Shelter("10", "NEWBORNS"
+        );
         assertEquals("Families with newborns", s.getAge());
     }
 
     @Test
     public void testFindAgeCY() {
-        Shelter s = new Shelter("", "", "10", "YOUNG or CHILDREN",
-                "", "", "", "");
+        Shelter s = new Shelter("10", "YOUNG or CHILDREN"
+        );
         assertEquals("Children / Young Adults", s.getAge());
     }
 
     @Test
     public void testFindAgeChildren() {
-        Shelter s = new Shelter("", "", "10", "CHILDREN",
-                "", "", "", "");
+        Shelter s = new Shelter("10", "CHILDREN"
+        );
         assertEquals("Children", s.getAge());
     }
 
     @Test
     public void testAgeYoungAdults() {
-        Shelter s = new Shelter("", "", "10", "YOUNG",
-                "", "", "", "");
+        Shelter s = new Shelter("10", "YOUNG"
+        );
         assertEquals("Young Adults", s.getAge());
     }
 
     @Test
     public void testAgeAnyone() {
-        Shelter s = new Shelter("", "", "10", "VETERANS",
-                "", "", "", "");
+        Shelter s = new Shelter("10", "VETERANS"
+        );
         assertEquals("Anyone", s.getAge());
     }
 
@@ -106,29 +102,29 @@ public class ExampleUnitTest {
 
     @Test
     public void testFindGenderAnyone() {
-        Shelter s = new Shelter("", "", "10", "ANYONE",
-                "", "", "", "");
+        Shelter s = new Shelter("10", "ANYONE"
+        );
         assertEquals("Male/Female", s.getGender());
     }
 
     @Test
     public void testFindWomen() {
-        Shelter s = new Shelter("", "", "10", "WOMEN",
-                "", "", "", "");
+        Shelter s = new Shelter("10", "WOMEN"
+        );
         assertEquals("Female", s.getGender());
     }
 
     @Test
     public void testFindGenderMen() {
-        Shelter s = new Shelter("", "", "10", "MEN",
-                "", "", "", "");
+        Shelter s = new Shelter("10", "MEN"
+        );
         assertEquals("Male", s.getGender());
     }
 
     @Test
     public void testFindGenderNone() {
-        Shelter s = new Shelter("", "", "10", "",
-                "", "", "", "");
+        Shelter s = new Shelter("10", ""
+        );
         assertEquals("Male/Female/Unknown", s.getGender());
     }
 

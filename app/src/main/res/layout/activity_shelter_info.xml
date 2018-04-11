@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.cs2340.noexceptions.homelesshelper.ShelterInfo"
-    android:background="#55A8D2">
+    android:theme="@style/ColorTheme">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

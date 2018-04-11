@@ -2,10 +2,9 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background">
+    >
 
     <LinearLayout
         android:id="@+id/main"
@@ -31,38 +30,39 @@
             android:layout_width="match_parent"
             android:layout_height="177dp" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal">
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/numPeopleText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
                 android:fontFamily="serif"
                 android:text="Number of People"
+                android:textAlignment="viewStart"
                 android:textAllCaps="false"
                 android:textColor="@color/common_google_signin_btn_text_dark_focused"
-                android:textSize="17sp" />
+                android:textSize="17sp"
+                android:layout_marginTop="15dp"/>
 
             <EditText
                 android:id="@+id/numPeople"
-                android:labelFor="@+id/numPeople"
                 android:layout_width="110dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_alignParentEnd="true"
                 android:backgroundTint="@android:color/transparent"
+                android:cursorVisible="false"
                 android:ems="10"
                 android:fontFamily="serif"
                 android:inputType="number"
+                android:labelFor="@+id/numPeople"
                 android:singleLine="false"
                 android:text="1"
-                android:cursorVisible="false"
                 android:textAlignment="viewEnd" />
-
-        </LinearLayout>
+        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -72,17 +72,16 @@
                 android:id="@+id/recordNumPeople"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:text="Submit"
                 android:textAlignment="center" />
 
         </RelativeLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_weight="1"
-            android:orientation="horizontal">
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
             <TextView
                 android:id="@+id/nameText"
@@ -91,23 +90,26 @@
                 android:fontFamily="serif"
                 android:text="Shelter Reserved"
                 android:textColor="@color/common_google_signin_btn_text_dark_focused"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:layout_marginTop="8dp"/>
 
             <EditText
                 android:id="@+id/shelterName"
-                android:labelFor="@+id/shelterName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:backgroundTint="@android:color/transparent"
                 android:ems="10"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
                 android:fontFamily="serif"
                 android:inputType="none"
-                android:textAlignment="viewEnd" />
+                android:labelFor="@+id/shelterName"
+                android:textAlignment="viewEnd"
+                android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@id/nameText"
+                android:textSize="15sp" />
 
-        </LinearLayout>
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -130,6 +132,7 @@
                 android:layout_weight="1"
                 android:text="Logout"
                 style="?android:attr/buttonBarButtonStyle"/>
+
         </LinearLayout>
 
     </LinearLayout>
@@ -150,73 +153,45 @@
         app:layout_constraintTop_toBottomOf="@+id/main"
         >
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/shelterListText"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:drawableTop="@drawable/home"
+            android:scaleX=".75"
+            android:scaleY=".75"
+            android:text="Shelters"
+            android:textAlignment="center"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textSize="18sp" />
 
-            <ImageView
-                android:id="@+id/shelterList"
-                android:layout_width="match_parent"
-                android:layout_height="41dp"
-                android:contentDescription="shelter list"
-                app:srcCompat="@drawable/home" />
-
-            <TextView
-                android:id="@+id/shelterListText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Shelters"
-                android:textAlignment="center"
-                android:textColor="@color/common_google_signin_btn_text_dark_focused" />
-
-        </LinearLayout>
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/shelterMapText"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:drawableTop="@drawable/map"
+            android:scaleX=".75"
+            android:scaleY=".75"
+            android:text="Map"
+            android:textAlignment="center"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textSize="18sp" />
 
-            <ImageView
-                android:id="@+id/shelterMap"
-                android:layout_width="match_parent"
-                android:layout_height="41dp"
-                android:contentDescription="shelterMap"
-                app:srcCompat="@drawable/map" />
-
-            <TextView
-                android:id="@+id/shelterMapText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Map"
-                android:textAlignment="center"
-                android:textColor="@color/common_google_signin_btn_text_dark_focused" />
-
-        </LinearLayout>
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/userSettingsText"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:drawableTop="@drawable/gear"
+            android:scaleX=".75"
+            android:scaleY=".75"
+            android:text="Map"
+            android:textAlignment="center"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textSize="18sp" />
 
-            <ImageView
-                android:id="@+id/userSettings"
-                android:layout_width="match_parent"
-                android:layout_height="41dp"
-                app:srcCompat="@drawable/gear" />
-
-            <TextView
-                android:id="@+id/userSettingsText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Settings"
-                android:textAlignment="center"
-                android:textColor="@color/common_google_signin_btn_text_dark_focused"
-                tools:text="user settings" />
-        </LinearLayout>
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

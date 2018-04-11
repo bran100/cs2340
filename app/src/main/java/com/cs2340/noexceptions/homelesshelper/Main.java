@@ -11,8 +11,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Filter;
-import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -94,7 +94,7 @@ public class Main extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Object shelterClickedId = listView.getItemAtPosition(i);
-                currentShelter = shelterClickedId.toString();
+                setCurrentShelter(shelterClickedId.toString());
                 Intent shelterInfo = new Intent(getBaseContext(), ShelterInfo.class);
                 shelterInfo.putExtra("activity", "main");
                 startActivity(shelterInfo);
@@ -102,7 +102,7 @@ public class Main extends AppCompatActivity {
             }
         });
 
-        ImageView profile = findViewById(R.id.profile);
+        TextView profile = findViewById(R.id.profileText);
         profile.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -111,7 +111,7 @@ public class Main extends AppCompatActivity {
             }
         });
 
-        ImageView maps = findViewById(R.id.shelterMap);
+        TextView maps = findViewById(R.id.shelterMapText);
         maps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -127,5 +127,8 @@ public class Main extends AppCompatActivity {
      */
     public static String getCurrentShelter() {
         return currentShelter;
+    }
+    private static void setCurrentShelter(String shelter) {
+        currentShelter = shelter;
     }
 }

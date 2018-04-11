@@ -2,13 +2,14 @@ package com.cs2340.noexceptions.homelesshelper;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -16,6 +17,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,30 +45,31 @@ public class ShelterInfo extends AppCompatActivity {
     }
 
     private void setUpEditTexts(Shelter currentShelter) {
+        String[] editTextsInfo = currentShelter.getEditInfo();
         EditText shelterName = findViewById(R.id.shelterName);
-        shelterName.setText(currentShelter.getName());
+        shelterName.setText(editTextsInfo[0]);
 
         EditText shelterGender = findViewById(R.id.shelterGender);
-        shelterGender.setText(currentShelter.getGender());
+        shelterGender.setText(editTextsInfo[1]);
 
         EditText shelterCapacity = findViewById(R.id.shelterCapacity);
-        shelterCapacity.setText(currentShelter.getCapacity());
+        shelterCapacity.setText(editTextsInfo[2]);
 
         EditText shelterLongitude = findViewById(R.id.shelterLongitude);
-        shelterLongitude.setText(currentShelter.getLongitude());
+        shelterLongitude.setText(editTextsInfo[3]);
 
         EditText shelterLatitude = findViewById(R.id.shelterLatitude);
-        shelterLatitude.setText(currentShelter.getLatitude());
+        shelterLatitude.setText(editTextsInfo[4]);
 
         EditText shelterAddress = findViewById(R.id.shelterAddress);
-        shelterAddress.setText(currentShelter.getAddress());
+        shelterAddress.setText(editTextsInfo[5]);
 
         EditText shelterPhone = findViewById(R.id.shelterPhone);
-        shelterPhone.setText(currentShelter.getTelephoneNumber());
+        shelterPhone.setText(editTextsInfo[6]);
     }
 
     private void setUpOnClicks() {
-        ImageView shelters = findViewById(R.id.shelterList);
+        TextView shelters = findViewById(R.id.shelterText);
         shelters.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -75,7 +78,7 @@ public class ShelterInfo extends AppCompatActivity {
             }
         });
 
-        ImageView profile = findViewById(R.id.profile);
+        TextView profile = findViewById(R.id.profileText);
         profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -84,7 +87,7 @@ public class ShelterInfo extends AppCompatActivity {
             }
         });
 
-        ImageView map = findViewById(R.id.shelterMap);
+        TextView map = findViewById(R.id.shelterMapText);
         map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -93,7 +96,7 @@ public class ShelterInfo extends AppCompatActivity {
             }
         });
 
-        ImageView settings = findViewById(R.id.userSettings);
+        TextView settings = findViewById(R.id.userSettingsText);
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -103,7 +106,7 @@ public class ShelterInfo extends AppCompatActivity {
         });
 
         reserve = findViewById(R.id.reserveButton);
-        if (currentUser instanceof HomelessPerson) {
+        if (currentUser.getClass() == HomelessPerson.class) {
             HomelessPerson currentHomeless = (HomelessPerson) currentUser;
             if (currentHomeless.getReserved()) {
                 reserve.setVisibility(View.GONE);
@@ -114,10 +117,11 @@ public class ShelterInfo extends AppCompatActivity {
         reserve.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (currentUser instanceof HomelessPerson) {
+                if (currentUser.getClass() == HomelessPerson.class) {
                     HomelessPerson currentHomeless = (HomelessPerson) currentUser;
-                    if(!currentHomeless.reserveVacancy(currentShelter)
-                            && !currentHomeless.getReserved()) {
+                    boolean[] boolInfo = currentHomeless.shelterInfoBool(currentShelter);
+
+                    if(!boolInfo[0] && !boolInfo[1]) {
                         Toast fail = Toast.makeText(getApplicationContext(),
                                 "Cannot reserve, capacity has been exceeded",
                                 Toast.LENGTH_SHORT);
@@ -128,9 +132,13 @@ public class ShelterInfo extends AppCompatActivity {
                         shelterCapacity.setText(currentShelter.getCapacity());
                         reserve.setVisibility(View.GONE);
                     }
-                    DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-                    DatabaseReference ref = database.child("users").child("User")
-                            .child(currentUser.userName);
+
+                    FirebaseDatabase fireBase = FirebaseDatabase.getInstance();
+                    DatabaseReference database = fireBase.getReference();
+                    DatabaseReference refUsers = database.child("users");
+                    DatabaseReference refUser = refUsers.child("User");
+                    DatabaseReference ref = refUser.child(currentUser.userName);
+
                     Map<String,Object> updateMap = new HashMap<>();
                     updateMap.put("reserved", true);
                     updateMap.put("reservedShelter", currentShelter.getName());
@@ -141,7 +149,7 @@ public class ShelterInfo extends AppCompatActivity {
     }
     private  void checkUserReserved() {
         User currentUser = Profile.getUser();
-        if (currentUser instanceof HomelessPerson) {
+        if (currentUser.getClass() == HomelessPerson.class) {
             HomelessPerson currentHomeless = (HomelessPerson) currentUser;
             if (currentHomeless.getReserved()) {
                 Button reserve = findViewById(R.id.reserveButton);
@@ -158,22 +166,27 @@ public class ShelterInfo extends AppCompatActivity {
             currentShelterName = MapsActivity.getCurrentShelter();
         }
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(currentShelterName);
+            ActionBar sab = getSupportActionBar();
+            sab.setTitle(currentShelterName);
         }
-        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+        FirebaseDatabase fireBase = FirebaseDatabase.getInstance();
+        DatabaseReference database = fireBase.getReference();
         DatabaseReference ref = database.child("shelters");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Shelter s = snapshot.getValue(Shelter.class);
-                    if ((s != null) && (s.getName().equals(currentShelterName))) {
-                        s.updateAllNeeded();
-                        currentShelter = s;
-                        setUpEditTexts(currentShelter);
-                        setUpOnClicks();
-                        checkUserReserved();
-                        break;
+                    if (s != null ) {
+                        String name = s.getName();
+                        if (name.equals(currentShelterName)) {
+                            s.updateAllNeeded();
+                            currentShelter = s;
+                            setUpEditTexts(currentShelter);
+                            setUpOnClicks();
+                            checkUserReserved();
+                            break;
+                        }
                     }
                 }
             }
