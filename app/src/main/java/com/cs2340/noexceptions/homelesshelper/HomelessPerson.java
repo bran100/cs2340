@@ -39,7 +39,7 @@ class HomelessPerson extends User {
      * @param s A shelter
      * @return True or False of whether or not the shelter was reserved
      */
-    private boolean reserveVacancy(Shelter s) {
+    public boolean reserveVacancy(Shelter s) {
         boolean check;
         if (!reserved) {
             check = s.updateCapacity(numPeople);

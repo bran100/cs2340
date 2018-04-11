@@ -128,5 +128,37 @@ public class ExampleUnitTest {
         assertEquals("Male/Female/Unknown", s.getGender());
     }
 
+    // Samantha
+    // tests for reserveVacancy(shelter s);
+
+    @Test
+    public void testFullCapacityReservation() {
+        Shelter s = new Shelter("0", "");
+        s.setName("Shelter1");
+        HomelessPerson person = new HomelessPerson();
+        person.setNumPeople(1);
+
+        person.reserveVacancy(s);
+
+
+        assertEquals("0", s.getCapacity());
+        assertEquals(false, person.getReserved());
+        assertEquals(null, person.getReservedShelter());
+    }
+
+    @Test
+    public void testSpaceForReservation() {
+        Shelter s = new Shelter("10", "");
+        s.setName("Shelter1");
+        HomelessPerson person = new HomelessPerson();
+        person.setNumPeople(1);
+
+        person.reserveVacancy(s);
+
+        assertEquals("9", s.getCapacity());
+        assertEquals(true, person.getReserved());
+        assertEquals("Shelter1", person.getReservedShelter());
+    }
+
 
 }

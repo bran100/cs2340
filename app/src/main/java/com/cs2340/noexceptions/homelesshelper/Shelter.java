@@ -123,13 +123,13 @@ public class Shelter {
         } else {
             int cap = Integer.parseInt(capacity) - numPeople;
             capacity = Integer.toString(cap);
-            FirebaseDatabase fireBase = FirebaseDatabase.getInstance();
-            DatabaseReference databaseMain = fireBase.getReference();
-            DatabaseReference databaseShelters = databaseMain.child("shelters");
-            DatabaseReference database = databaseShelters.child(id);
-            Map<String, Object> taskMap = new HashMap<>();
-            taskMap.put("capacity", capacity);
-            database.updateChildren(taskMap);
+//            FirebaseDatabase fireBase = FirebaseDatabase.getInstance();
+//            DatabaseReference databaseMain = fireBase.getReference();
+//            DatabaseReference databaseShelters = databaseMain.child("shelters");
+//            DatabaseReference database = databaseShelters.child(id);
+//            Map<String, Object> taskMap = new HashMap<>();
+//            taskMap.put("capacity", capacity);
+//            database.updateChildren(taskMap);
             return true;
         }
     }
@@ -163,6 +163,7 @@ public class Shelter {
     String getAge() {
         return age;
     }
+    void setName(String s) {this.name = s; }
     String getLongitude() {
         return longitude;
     }
