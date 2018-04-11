@@ -129,4 +129,7 @@ public class ExampleUnitTest {
     }
 
 
+    //see Samantha branch for my unit test (reserveVacancy method)
+
+
 }
